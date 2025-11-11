@@ -1,0 +1,57 @@
+services:
+  - type: web
+    name: sensor-1
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: CONTROL_URL
+        value: http://control.internal:5000
+    disk:
+      name: sensor1data
+      mountPath: /data
+
+  - type: web
+    name: sensor-2
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: CONTROL_URL
+        value: http://control.internal:5000
+    disk:
+      name: sensor2data
+      mountPath: /data
+
+  - type: web
+    name: sensor-3
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: CONTROL_URL
+        value: http://control.internal:5000
+    disk:
+      name: sensor3data
+      mountPath: /data
+
+  - type: web
+    name: sensor-4
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: CONTROL_URL
+        value: http://control.internal:5000
+    disk:
+      name: sensor4data
+      mountPath: /data
+
+  - type: private-service
+    name: control
+    env: docker
+    plan: free
+    autoDeploy: true
+    disk:
+      name: controldb
+      mountPath: /data
