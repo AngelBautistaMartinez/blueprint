@@ -6,7 +6,7 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control.internal:5000
+        value: http://control:5000
     disk:
       name: sensor1data
       mountPath: /data
@@ -18,7 +18,7 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control.internal:5000
+        value: http://control:5000
     disk:
       name: sensor2data
       mountPath: /data
@@ -30,7 +30,7 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control.internal:5000
+        value: http://control:5000
     disk:
       name: sensor3data
       mountPath: /data
@@ -42,12 +42,12 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control.internal:5000
+        value: http://control:5000
     disk:
       name: sensor4data
       mountPath: /data
 
-  - type: private-service
+  - type: worker
     name: control
     env: docker
     plan: free
