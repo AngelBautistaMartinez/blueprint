@@ -6,10 +6,11 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control:5000
-    disk:
-      name: sensor1data
-      mountPath: /data
+        value: https://control.onrender.com
+      - key: SUPABASE_URL
+        value: https://YOUR_PROJECT_ID.supabase.co
+      - key: SUPABASE_KEY
+        value: YOUR_PUBLIC_ANON_KEY
 
   - type: web
     name: sensor-2
@@ -18,10 +19,11 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control:5000
-    disk:
-      name: sensor2data
-      mountPath: /data
+        value: https://control.onrender.com
+      - key: SUPABASE_URL
+        value: https://YOUR_PROJECT_ID.supabase.co
+      - key: SUPABASE_KEY
+        value: YOUR_PUBLIC_ANON_KEY
 
   - type: web
     name: sensor-3
@@ -30,10 +32,11 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control:5000
-    disk:
-      name: sensor3data
-      mountPath: /data
+        value: https://control.onrender.com
+      - key: SUPABASE_URL
+        value: https://YOUR_PROJECT_ID.supabase.co
+      - key: SUPABASE_KEY
+        value: YOUR_PUBLIC_ANON_KEY
 
   - type: web
     name: sensor-4
@@ -42,16 +45,19 @@ services:
     autoDeploy: true
     envVars:
       - key: CONTROL_URL
-        value: http://control:5000
-    disk:
-      name: sensor4data
-      mountPath: /data
+        value: https://control.onrender.com
+      - key: SUPABASE_URL
+        value: https://YOUR_PROJECT_ID.supabase.co
+      - key: SUPABASE_KEY
+        value: YOUR_PUBLIC_ANON_KEY
 
-  - type: worker
+  - type: web
     name: control
     env: docker
     plan: free
     autoDeploy: true
-    disk:
-      name: controldb
-      mountPath: /data
+    envVars:
+      - key: SUPABASE_URL
+        value: https://YOUR_PROJECT_ID.supabase.co
+      - key: SUPABASE_KEY
+        value: YOUR_PUBLIC_ANON_KEY
