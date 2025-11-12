@@ -1,40 +1,38 @@
 from flask import Flask, request, jsonify
-import sqlite3
-import os
+import datetime, os, requests
 
 app = Flask(__name__)
 
-DB_PATH = "/data/control.db"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-def create_db():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS logs (
-                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 ip TEXT,
-                 timestamp TEXT
-                 )''')
-    conn.commit()
-    conn.close()
+def log_to_supabase(ip, timestamp, data=None):
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {"ip": ip, "timestamp": timestamp, "data": data}
+    r = requests.post(f"{SUPABASE_URL}/rest/v1/connections", headers=headers, json=payload)
+    print("Supabase insert:", r.status_code, r.text)
 
-@app.route('/log', methods=['POST'])
-def receive_log():
+@app.before_request
+def log_connection():
+    ip = request.remote_addr
+    timestamp = datetime.datetime.utcnow().isoformat()
+    log_to_supabase(ip, timestamp)
+
+@app.route("/")
+def home():
+    return "Hello from Flask server (Supabase logging)"
+
+@app.route("/send", methods=["POST"])
+def receive_data():
     data = request.get_json()
-    ip = data.get("ip")
-    timestamp = data.get("timestamp")
+    ip = request.remote_addr
+    timestamp = datetime.datetime.utcnow().isoformat()
+    log_to_supabase(ip, timestamp, data)
+    return jsonify({"status": "success", "received": data})
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("INSERT INTO logs (ip, timestamp) VALUES (?, ?)", (ip, timestamp))
-    conn.commit()
-    conn.close()
-
-    return jsonify({"status": "logged", "ip": ip}), 200
-
-@app.route('/')
-def index():
-    return "Control Node Active"
-
-if __name__ == '__main__':
-    create_db()
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
