@@ -1,46 +1,38 @@
 from flask import Flask, request, jsonify
-import sqlite3
-import datetime
-import os
-import requests
+import datetime, os, requests
 
 app = Flask(__name__)
 
-DB_PATH = "/data/connections.db"
-CONTROL_URL = os.getenv("CONTROL_URL")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-def create_db():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS connections (
-                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 ip TEXT,
-                 timestamp TEXT
-                 )''')
-    conn.commit()
-    conn.close()
+def log_to_supabase(ip, timestamp, data=None):
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {"ip": ip, "timestamp": timestamp, "data": data}
+    r = requests.post(f"{SUPABASE_URL}/rest/v1/connections", headers=headers, json=payload)
+    print("Supabase insert:", r.status_code, r.text)
 
 @app.before_request
 def log_connection():
     ip = request.remote_addr
     timestamp = datetime.datetime.utcnow().isoformat()
+    log_to_supabase(ip, timestamp)
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("INSERT INTO connections (ip, timestamp) VALUES (?, ?)", (ip, timestamp))
-    conn.commit()
-    conn.close()
-
-    # send info to control server
-    try:
-        requests.post(f"{CONTROL_URL}/log", json={"ip": ip, "timestamp": timestamp})
-    except Exception as e:
-        print("Failed to send to control:", e)
-
-@app.route('/')
+@app.route("/")
 def home():
-    return "Sensor Node Active"
+    return "Hello from Flask server (Supabase logging)"
 
-if __name__ == '__main__':
-    create_db()
-    app.run(host='0.0.0.0', port=5000)
+@app.route("/send", methods=["POST"])
+def receive_data():
+    data = request.get_json()
+    ip = request.remote_addr
+    timestamp = datetime.datetime.utcnow().isoformat()
+    log_to_supabase(ip, timestamp, data)
+    return jsonify({"status": "success", "received": data})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
