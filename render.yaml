@@ -8,9 +8,9 @@ services:
       - key: CONTROL_URL
         value: https://control.onrender.com
       - key: SUPABASE_URL
-        value: https://YOUR_PROJECT_ID.supabase.co
+        sync: false
       - key: SUPABASE_KEY
-        value: YOUR_PUBLIC_ANON_KEY
+        sync: false
 
   - type: web
     name: sensor-2
@@ -21,9 +21,9 @@ services:
       - key: CONTROL_URL
         value: https://control.onrender.com
       - key: SUPABASE_URL
-        value: https://YOUR_PROJECT_ID.supabase.co
+        sync: false
       - key: SUPABASE_KEY
-        value: YOUR_PUBLIC_ANON_KEY
+        sync: false
 
   - type: web
     name: sensor-3
@@ -34,9 +34,9 @@ services:
       - key: CONTROL_URL
         value: https://control.onrender.com
       - key: SUPABASE_URL
-        value: https://YOUR_PROJECT_ID.supabase.co
+        sync: false
       - key: SUPABASE_KEY
-        value: YOUR_PUBLIC_ANON_KEY
+        sync: false
 
   - type: web
     name: sensor-4
@@ -47,9 +47,9 @@ services:
       - key: CONTROL_URL
         value: https://control.onrender.com
       - key: SUPABASE_URL
-        value: https://YOUR_PROJECT_ID.supabase.co
+        sync: false
       - key: SUPABASE_KEY
-        value: YOUR_PUBLIC_ANON_KEY
+        sync: false
 
   - type: web
     name: control
@@ -58,6 +58,6 @@ services:
     autoDeploy: true
     envVars:
       - key: SUPABASE_URL
-        value: https://YOUR_PROJECT_ID.supabase.co
+        sync: false
       - key: SUPABASE_KEY
-        value: YOUR_PUBLIC_ANON_KEY
+        sync: false
