@@ -1,9 +1,24 @@
 services:
   - type: web
+    name: control
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./control/Dockerfile
+    dockerContext: ./control
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+        
+  - type: web
     name: sensor-1
     env: docker
     plan: free
     autoDeploy: true
+    dockerfilePath: ./sensor/Dockerfile
+    dockerContext: ./sensor
     envVars:
       - key: CONTROL_URL
         value: https://control-jo9v.onrender.com
@@ -17,9 +32,11 @@ services:
     env: docker
     plan: free
     autoDeploy: true
+    dockerfilePath: ./sensor/Dockerfile
+    dockerContext: ./sensor
     envVars:
       - key: CONTROL_URL
-        value:  https://control-jo9v.onrender.com
+        value: https://control-jo9v.onrender.com
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_KEY
@@ -30,19 +47,8 @@ services:
     env: docker
     plan: free
     autoDeploy: true
-    envVars:
-      - key: CONTROL_URL
-        value:  https://control-jo9v.onrender.com
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_KEY
-        sync: false
-
-  - type: web
-    name: sensor-4
-    env: docker
-    plan: free
-    autoDeploy: true
+    dockerfilePath: ./sensor/Dockerfile
+    dockerContext: ./sensor
     envVars:
       - key: CONTROL_URL
         value: https://control-jo9v.onrender.com
@@ -51,12 +57,17 @@ services:
       - key: SUPABASE_KEY
         sync: false
 
+
   - type: web
-    name: control
+    name: sensor-4
     env: docker
     plan: free
     autoDeploy: true
+    dockerfilePath: ./sensor/Dockerfile
+    dockerContext: ./sensor
     envVars:
+      - key: CONTROL_URL
+        value: https://control-jo9v.onrender.com
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_KEY
