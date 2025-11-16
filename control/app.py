@@ -18,18 +18,22 @@ def log_to_supabase(ip, timestamp, data=None):
 
 @app.before_request
 def log_connection():
-    ip = request.remote_addr
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if ',' in ip:
+        ip = ip.split(',')[0].strip()
+    
     timestamp = datetime.datetime.utcnow().isoformat()
     log_to_supabase(ip, timestamp)
-
 @app.route("/")
 def home():
     return "Hello from Flask server (Supabase logging)"
 
 @app.route("/send", methods=["POST"])
 def receive_data():
-    data = request.get_json()
-    ip = request.remote_addr
+    data = request.get_json()    
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if ',' in ip:
+        ip = ip.split(',')[0].strip()
     timestamp = datetime.datetime.utcnow().isoformat()
     log_to_supabase(ip, timestamp, data)
     return jsonify({"status": "success", "received": data})
