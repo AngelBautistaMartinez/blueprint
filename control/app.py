@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SERVER_ID = os.getenv("SERVER_ID", "UNKNOWN")
 
 def log_to_supabase(ip, timestamp, data=None):
     headers = {
@@ -12,6 +13,14 @@ def log_to_supabase(ip, timestamp, data=None):
         "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json",
     }
+
+    if data is None:
+        data{}
+
+    if "sensor_id" not in data:
+        data["sensor_id"] = SERVER_ID
+        data["source"] = "browser"
+    
     payload = {"ip": ip, "timestamp": timestamp, "data": data}
     r = requests.post(f"{SUPABASE_URL}/rest/v1/connections", headers=headers, json=payload)
     print("Supabase insert:", r.status_code, r.text)
@@ -26,7 +35,7 @@ def log_connection():
     log_to_supabase(ip, timestamp)
 @app.route("/")
 def home():
-    return "Hello from Flask server (Supabase logging)"
+    return "Hello"
 
 @app.route("/send", methods=["POST"])
 def receive_data():
@@ -35,6 +44,11 @@ def receive_data():
     if ',' in ip:
         ip = ip.split(',')[0].strip()
     timestamp = datetime.datetime.utcnow().isoformat()
+
+    if data is None:
+        data = {}
+    data["source"] = "program"
+    
     log_to_supabase(ip, timestamp, data)
     return jsonify({"status": "success", "received": data})
 
