@@ -15,7 +15,7 @@ def log_to_supabase(ip, timestamp, data=None):
     }
 
     if data is None:
-        data{}
+        data = {}
 
     if "sensor_id" not in data:
         data["sensor_id"] = SERVER_ID
