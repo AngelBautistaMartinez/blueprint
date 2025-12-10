@@ -15,7 +15,7 @@ services:
         sync: false
         
   - type: web
-    name: sensor-1
+    name: EERON
     env: docker
     plan: free
     autoDeploy: true
@@ -32,7 +32,7 @@ services:
         sync: false
 
   - type: web
-    name: sensor-2
+    name: TSLI
     env: docker
     plan: free
     autoDeploy: true
@@ -49,7 +49,7 @@ services:
         sync: false
 
   - type: web
-    name: sensor-3
+    name: KIGS
     env: docker
     plan: free
     autoDeploy: true
@@ -67,7 +67,7 @@ services:
 
 
   - type: web
-    name: sensor-4
+    name: BIGF
     env: docker
     plan: free
     autoDeploy: true
